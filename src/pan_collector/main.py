@@ -4,7 +4,7 @@ from pathlib import Path
 
 from optiv_lib.config import AppConfig
 from optiv_lib.providers.pan.ops import op, op_on_device
-from optiv_lib.providers.pan.panorama.managed_devices.api import list_connected
+from optiv_lib.providers.pan.panorama.managed_devices.api import list_all
 from optiv_lib.providers.pan.session import PanoramaSession
 
 
@@ -24,7 +24,7 @@ def sanitize(branch):
 
 def collect_devices(panorama, export):
     print("[1/3] Collecting device list from Panorama...")
-    connected = list_connected(session=panorama)
+    connected = list_all(session=panorama)
     devices = connected.get("devices", {}).get("entry", [])
     print(f"  Found {len(devices)} connected devices.")
 

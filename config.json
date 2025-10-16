@@ -2,12 +2,12 @@
   "panorama": {
     "hostname": "172.31.0.99",
     "username": "admin",
-    "password": { "env": "PANORAMA_PASSWORD", "default": "" },
+    "password": { "env": "JASBAR_PANORAMA", "default": "" },
     "verify": false,
     "timeout": 20
   },
   "app": {
-    "example": ""
+    "example": "<null>"
   }
 }
 
