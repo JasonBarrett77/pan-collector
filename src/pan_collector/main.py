@@ -45,6 +45,7 @@ def write_json(export):
 
 def main():
     config_path = Path.cwd() / "config.json"
+    print(f"Reading config from {config_path}")
     cfg = AppConfig.from_json(config_path)
     panorama = PanoramaSession(cfg)
 
