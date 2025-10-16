@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pan-collector"
+version = "0.1.0"
+requires-python = "~=3.12"
+dependencies = [
+    "optiv-lib @ https://github.com/JasonBarrett77/optiv-lib/releases/download/v0.1.4/optiv_lib-0.1.4-py3-none-any.whl",
+]

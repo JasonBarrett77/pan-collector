@@ -1,0 +1,13 @@
+{
+  "panorama": {
+    "hostname": "172.31.0.99",
+    "username": "admin",
+    "password": { "env": "PANORAMA_PASSWORD", "default": "" },
+    "verify": false,
+    "timeout": 20
+  },
+  "app": {
+    "example": ""
+  }
+}
+

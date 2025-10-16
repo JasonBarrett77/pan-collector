@@ -1,0 +1,14 @@
+- Panorama: Template — Device > User Identification: global “Enable User-ID,” User Mapping sources (User-ID Agent, Server Monitoring/LDAP, GlobalProtect, Captive Portal, Syslog parsing, XML API, TS Agent, Client Probing), username formats, include/exclude networks, ignore lists, probe settings, Kerberos SSO, Authentication Portal settings, Cloud Identity Engine.
+- Panorama: Template — Network > Zones: per-zone “Enable User Identification.”
+- Panorama: Template — Device > Server Profiles: LDAP (for Group Mapping), Syslog, Kerberos, RADIUS/SAML as used by Auth Portal and GP.
+- Panorama: Template — Device > Data Redistribution: User-ID/Data redistribution (sources, clients, include/exclude networks, service routes).
+- Panorama: Device Group — Objects: Dynamic User Groups.
+- Panorama: Device Group — Policies: Authentication policy (uses Captive Portal/User-ID), Security rules referencing users/groups or dynamic user groups.
+- Firewall: Device > User Identification > User Mapping: configure sources — PAN-OS integrated User-ID, external User-ID Agent, Server Monitoring/LDAP login events, GlobalProtect user mapping, Captive Portal logins, Syslog parsing, XML API, Terminal Services (TS) Agent, Client Probing.
+- Firewall: Device > User Identification > Group Mapping Settings: LDAP server profile, group include list, user and group attribute mappings, alternate usernames.
+- Firewall: Device > User Identification: username format, include/exclude networks, probe controls, ignore user list, Kerberos SSO, Authentication Portal settings, Cloud Identity Engine.
+- Firewall: Network > Zones: enable User Identification per zone.
+- Firewall: Device > Data Redistribution (PAN-OS 10.x “Data Redistribution” / older “User-ID Redistribution”): define sources/clients for IP-user and group mapping, include/exclude networks, service routes.
+- Firewall: Device > Server Profiles: LDAP (for group mapping), Syslog (if parsing for mappings), Kerberos, RADIUS/SAML (for Captive Portal/Authentication policy).
+- Firewall: Objects > Dynamic User Groups.
+- Firewall: Policies: Authentication policy and Security policy using users/groups or dynamic user groups.
