@@ -31,13 +31,20 @@ def collect_devices(panorama, export):
     for i, device in enumerate(devices, start=1):
         target = device["serial"]
         print(f"  ({i}/{len(devices)}) Collecting config from device {target}...")
-        effective = op_on_device(
-            session=panorama,
-            cmd="<show><config><effective-running/></config></show>",
-            target=target,
-        )
-        sanitize(effective)
-        export[target] = effective
+        try:
+            effective = op_on_device(
+                session=panorama,
+                cmd="<show><config><effective-running/></config></show>",
+                target=target,
+            )
+            sanitize(effective)
+            export[target] = effective
+        except Exception as e:
+            if 'password' not in e:
+                print(f"Failed to collect {target}: {e}")
+            else:
+                print(f"Failed to collect {target}: <redacted for security reasons>")
+                print(f"** Validate password is set correctly. **")
     print("  Device collection complete.")
 
 
