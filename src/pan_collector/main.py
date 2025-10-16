@@ -7,12 +7,13 @@ from optiv_lib.providers.pan.ops import op, op_on_device
 from optiv_lib.providers.pan.panorama.managed_devices.api import list_connected
 from optiv_lib.providers.pan.session import PanoramaSession
 
+
 def sanitize(branch):
     for k, v in branch.items():
-        if k == 'users':
-            branch[k] = ''
-        elif 'password' in k:
-            branch[k] = ''
+        if k == "users":
+            branch[k] = ""
+        elif "password" in k:
+            branch[k] = ""
         elif isinstance(v, dict):
             sanitize(v)
         elif isinstance(v, list):
@@ -22,37 +23,66 @@ def sanitize(branch):
 
 
 def collect_devices(panorama, export):
+    print("[1/3] Collecting device list from Panorama...")
     connected = list_connected(session=panorama)
-    for device in connected['devices']['entry']:
-        target = device['serial']
-        effective = op_on_device(session=panorama, cmd="<show><config><effective-running/></config></show>", target=target)
+    devices = connected.get("devices", {}).get("entry", [])
+    print(f"  Found {len(devices)} connected devices.")
+
+    for i, device in enumerate(devices, start=1):
+        target = device["serial"]
+        print(f"  ({i}/{len(devices)}) Collecting config from device {target}...")
+        effective = op_on_device(
+            session=panorama,
+            cmd="<show><config><effective-running/></config></show>",
+            target=target,
+        )
         sanitize(effective)
         export[target] = effective
+    print("  Device collection complete.")
 
 
 def collect_panorama(panorama, export):
-    panorama_effective = op(session=panorama, cmd="<show><config><candidate></candidate></config></show>")
+    print("[2/3] Collecting Panorama configuration...")
+    panorama_effective = op(
+        session=panorama,
+        cmd="<show><config><candidate></candidate></config></show>",
+    )
     sanitize(panorama_effective)
-    export['panorama'] = panorama_effective
+    export["panorama"] = panorama_effective
+    print("  Panorama config collected.")
 
 
 def write_json(export):
-    timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+    print("[3/3] Writing export to JSON file...")
+    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     filename = f"export_{timestamp}.json"
-    with open(filename, 'w') as f:
-        json.dump(export, f)
+    file_path = Path.cwd() / filename
+    with open(file_path, "w") as f:
+        json.dump(export, f, indent=2)
+    print(f"  Export complete: {file_path}")
 
 
 def main():
     config_path = Path.cwd() / "config.json"
-    print(f"Reading config from {config_path}")
+    print("Starting Panorama config collector.")
+    print(f"Looking for config file: {config_path}")
+    if not config_path.exists():
+        print("ERROR: config.json not found in current directory.")
+        return
+
+    print("Loading configuration...")
     cfg = AppConfig.from_json(config_path)
+
+    print("Establishing Panorama session...")
     panorama = PanoramaSession(cfg)
+    print("Connection established successfully.")
 
     export = {}
     collect_devices(panorama, export)
     collect_panorama(panorama, export)
     write_json(export)
+
+    print("All tasks completed successfully.")
 
 
 if __name__ == "__main__":
