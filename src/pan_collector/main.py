@@ -8,11 +8,18 @@ from optiv_lib.providers.pan.panorama.managed_devices.api import list_connected
 from optiv_lib.providers.pan.session import PanoramaSession
 
 
-def sanitize(branch):
-    for k, v in branch.items():
-        if k == "users":
-            branch[k] = ""
-        elif "password" in k:
+def sanitize(branch: dict) -> None:
+    """Recursively remove sensitive fields from nested PAN-OS config dicts."""
+    sensitive_keys = {
+        "pre-shared-key", "private-key", "public-key", "key",
+        "bind-password", "password", "secret",
+        "auth-password", "priv-password", "phash", "users"
+    }
+
+    for k, v in list(branch.items()):
+        key_lower = k.lower()
+        if any(token in key_lower for token in ("password", "secret", "key", "phash", "users")) \
+           or key_lower in sensitive_keys:
             branch[k] = ""
         elif isinstance(v, dict):
             sanitize(v)
@@ -20,6 +27,7 @@ def sanitize(branch):
             for item in v:
                 if isinstance(item, dict):
                     sanitize(item)
+
 
 
 def collect_devices(panorama, export):
